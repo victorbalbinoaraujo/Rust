@@ -10,6 +10,6 @@ fn fibonacci(number: u32) -> u32 {
     match number {
         0 => 0,
         1 | 2 => 1,
-        _ => fibonacci(number - 1) + fibonacci(number - 2)
+        _ => fibonacci(number - 1) + fibonacci(number - 2),
     }
 }
