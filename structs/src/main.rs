@@ -65,17 +65,27 @@ fn main() {
 
     // ---- Example Program ----
 
-    let rect1: Rectangle = Rectangle { length: 50, width: 30 };
+    let rect1: Rectangle = Rectangle {
+        length: 50,
+        width: 30,
+    };
 
-    println!("The area of the rectangle is {} square pixels", rect1.area());
+    println!(
+        "The area of the rectangle is {} square pixels",
+        rect1.area()
+    );
 
-    let rect2: Rectangle = Rectangle { length: 40, width: 20 };
-    let rect3: Rectangle = Rectangle { length: 45, width: 60 };
+    let rect2: Rectangle = Rectangle {
+        length: 40,
+        width: 20,
+    };
+    let rect3: Rectangle = Rectangle {
+        length: 45,
+        width: 60,
+    };
 
     println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2));
     println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3));
-    
-
 }
 
 fn build_user(email: String, username: String) -> User {
@@ -86,5 +96,3 @@ fn build_user(email: String, username: String) -> User {
         sign_in_count: 1,
     }
 }
-
-
