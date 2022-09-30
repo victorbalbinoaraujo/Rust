@@ -24,7 +24,7 @@ fn main() {
     let local: EnderecoIP = EnderecoIP::V4(127, 0, 0, 0, 1);
     let loopback: EnderecoIP = EnderecoIP::V6(String::from("::1"));
 
-    println!("{:?} {:?}", local, loopback);  
+    println!("{:?} {:?}", local, loopback);
 
     let msg: Mensagem = Mensagem::Escrever(String::from("Olá"));
     msg.call();
@@ -53,8 +53,6 @@ fn main() {
     let none: Option<i32> = plus_one(None);
 
     println!("{:?} {:?}", six, none);
-    
-
 }
 
 fn value_in_cents(coin: Coin) -> u32 {
