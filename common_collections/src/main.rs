@@ -17,13 +17,13 @@ fn main() {
 
     let v2: Vec<i32> = vec![1, 2, 3, 4, 5];
 
-    let _third: &i32 = &v2[2];                  // if not -> panic!
+    let _third: &i32 = &v2[2]; // if not -> panic!
     let _third: Option<&i32> = v2.get(2); // if not -> None
 
     let row: [SpreadSheetCell; 3] = [
         SpreadSheetCell::Int(5),
         SpreadSheetCell::Float(3.14),
-        SpreadSheetCell::Text(String::from("Blue"))
+        SpreadSheetCell::Text(String::from("Blue")),
     ];
 
     println!("{:?}", row);
