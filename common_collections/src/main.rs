@@ -30,7 +30,6 @@ fn main() {
 
     println!("{:?}", row);
 
-
     let mut s1: String = String::from("foo");
     let s2: String = String::from("bar");
     s1.push_str(&s2);
@@ -53,10 +52,18 @@ fn main() {
     let teams: Vec<String> = vec![String::from("Blue"), String::from("Yellow")];
     let initial_scores: Vec<i32> = vec![10, 50];
 
-    let scores:HashMap<_, _> = teams.iter().zip(initial_scores.iter()).collect();
+    let scores: HashMap<_, _> = teams.iter().zip(initial_scores.iter()).collect();
 
     println!("{:?}", scores);
 
-    
+    let text: &str = "hello world wonderful world";
 
+    let mut map: HashMap<&str, i32> = HashMap::new();
+
+    for word in text.split_whitespace() {
+        let count = map.entry(word).or_insert(0);
+        *count += 1;
+    }
+
+    println!("{:?}", map);
 }
