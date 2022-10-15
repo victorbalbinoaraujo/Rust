@@ -12,13 +12,18 @@ Sales, Engineering, ... -> Listar todos os funcionários do departamento
 All -> Listar todos os funcionários com respectivos departamentos em ordem alfabética
  */
 
+extern crate colored;
+
 use std::{
     collections::HashMap,
     io::{self, Write},
     str::Chars,
 };
 
-fn capitalize(s: &str) -> String {
+use colored::Colorize;
+use terminal_emoji::Emoji;
+
+fn capitalize_word(s: &str) -> String {
     let mut c: Chars = s.chars();
     match c.next() {
         None => String::new(),
@@ -26,11 +31,35 @@ fn capitalize(s: &str) -> String {
     }
 }
 
+fn help_prompt() {
+    println!(
+        "\nType {} to add an employee",
+        "'Add <name> to <department>'".blue().bold()
+    );
+    println!(
+        "Type {} to list all of employees of that department",
+        "'<department>'".blue().bold()
+    );
+    println!(
+        "Type {} to see all employees and their respectives departments",
+        "'All'".blue().bold()
+    );
+    println!(
+        "Type {} or {} to show this prompt",
+        "'Help'".green().bold(),
+        "'?'".yellow().bold()
+    );
+    println!("Type {} to quit\n", "'Quit'".red().bold());
+}
+
 enum Opt {
     Add { name: String, dpt: String },
     Department(String),
     All,
+    Help,
     Quit,
+    // TODO: Alter,
+    // TODO: Delete,
 }
 
 impl Opt {
@@ -39,11 +68,12 @@ impl Opt {
 
         match e.as_slice() {
             ["Add", name, "to", dpt] => Some(Opt::Add {
-                name: capitalize(name),
-                dpt: capitalize(dpt),
+                name: capitalize_word(name),
+                dpt: capitalize_word(dpt),
             }),
             ["Quit"] => Some(Opt::Quit),
             ["All"] => Some(Opt::All),
+            ["Help" | "?"] => Some(Opt::Help),
             [dpt] => Some(Opt::Department(dpt.to_string())),
             _ => None,
         }
@@ -53,41 +83,69 @@ impl Opt {
 fn main() {
     let mut employees_list: HashMap<String, Vec<String>> = HashMap::new();
 
-    println!("\nType 'Add <name> to <department>' to add an employee");
-    println!("Type '<department>' to list all of employees of that department");
-    println!("Type 'All' to see all employees and their respectives depertments");
-    println!("Type 'Quit' to quit\n");
+    help_prompt();
 
     loop {
         let mut input: String = String::new();
 
-        print!("> ");
+        let arrow_emoji: Emoji = Emoji::new("▶️", ">");
+        print!("{} ", arrow_emoji.0);
         io::stdout().flush().unwrap();
 
         io::stdin()
             .read_line(&mut input)
             .expect("Failed to read line");
 
-        match Opt::split_employee(&input) {
-            Some(Opt::Add { name, dpt }) => employees_list
-                .entry(dpt)
-                .or_insert_with(Vec::new)
-                .push(name),
+        match Opt::split_employee(&capitalize_word(&input)) {
+            Some(Opt::Add { name, dpt }) => {
+                for (_dpt, names) in &employees_list {
+                    for n in names {
+                        if n.to_owned() == name {
+                            let alert_emoji = Emoji::new("🛑", "a");
+                            println!(
+                                "{} {}",
+                                alert_emoji.0,
+                                "An employee with this name already exists!".red().bold()
+                            );
+                            // TODO: Check if name already exists.
+                        }
+                    }
+                }
+
+                employees_list
+                    .entry(dpt)
+                    .or_insert_with(Vec::new)
+                    .push(name);
+
+                let check_emoji: Emoji = Emoji::new("✅", "v");
+                println!(
+                    "{} {}\n",
+                    check_emoji.0,
+                    "Successfully added!".green().bold()
+                );
+            }
 
             Some(Opt::Department(dpt)) => match employees_list.get(&dpt) {
                 Some(names) => {
-                    println!("\n---- {} ----", dpt.to_uppercase());
+                    println!("\n---- {} ----", dpt.to_uppercase().blue().bold());
                     for name in names {
                         println!(" {name}");
                     }
                     println!("\n");
                 }
-                None => println!("\nDepartment not found!\n"),
+                None => {
+                    let warning_emoji: Emoji = Emoji::new("⚠️", "w");
+                    println!(
+                        "\n{}  {}\n",
+                        warning_emoji.0,
+                        "Department not found!".yellow().bold()
+                    );
+                }
             },
 
             Some(Opt::All) => {
                 for (dpt, names) in &employees_list {
-                    println!("\n----- {} -----", dpt.to_uppercase());
+                    println!("\n----- {} -----", dpt.to_uppercase().blue().bold());
                     let mut names: Vec<String> = names.clone();
                     names.sort();
                     for name in names {
@@ -97,8 +155,18 @@ fn main() {
                 }
             }
 
+            Some(Opt::Help) => help_prompt(),
+
             Some(Opt::Quit) => break,
-            None => println!("[ERROR]: Invalid Syntax!"),
+
+            None => {
+                let error_emoji: Emoji = Emoji::new("🚫", "e");
+                println!(
+                    "\n{} {}\n",
+                    error_emoji.0,
+                    "[ERROR]: Invalid Syntax!".red().bold()
+                );
+            }
         }
     }
 }
