@@ -32,23 +32,10 @@ fn capitalize_word(s: &str) -> String {
 }
 
 fn help_prompt() {
-    println!(
-        "\nType {} to add an employee",
-        "'Add <name> to <department>'".blue().bold()
-    );
-    println!(
-        "Type {} to list all of employees of that department",
-        "'<department>'".blue().bold()
-    );
-    println!(
-        "Type {} to see all employees and their respectives departments",
-        "'All'".blue().bold()
-    );
-    println!(
-        "Type {} or {} to show this prompt",
-        "'Help'".green().bold(),
-        "'?'".yellow().bold()
-    );
+    println!("\nType {} to add an employee", "'Add <name> to <department>'".blue().bold());
+    println!("Type {} to list all of employees of that department", "'<department>'".blue().bold());
+    println!("Type {} to see all employees and their respectives departments", "'All'".blue().bold());
+    println!("Type {} or {} to show this prompt", "'Help'".green().bold(), "'?'".yellow().bold());
     println!("Type {} to quit\n", "'Quit'".red().bold());
 }
 
@@ -58,8 +45,6 @@ enum Opt {
     All,
     Help,
     Quit,
-    // TODO: Alter,
-    // TODO: Delete,
 }
 
 impl Opt {
@@ -98,19 +83,6 @@ fn main() {
 
         match Opt::split_employee(&capitalize_word(&input)) {
             Some(Opt::Add { name, dpt }) => {
-                for (_dpt, names) in &employees_list {
-                    for n in names {
-                        if n.to_owned() == name {
-                            let alert_emoji = Emoji::new("🛑", "a");
-                            println!(
-                                "{} {}",
-                                alert_emoji.0,
-                                "An employee with this name already exists!".red().bold()
-                            );
-                            // TODO: Check if name already exists.
-                        }
-                    }
-                }
 
                 employees_list
                     .entry(dpt)
@@ -118,11 +90,7 @@ fn main() {
                     .push(name);
 
                 let check_emoji: Emoji = Emoji::new("✅", "v");
-                println!(
-                    "{} {}\n",
-                    check_emoji.0,
-                    "Successfully added!".green().bold()
-                );
+                println!("{} {}\n", check_emoji.0, "Successfully added!".green().bold());
             }
 
             Some(Opt::Department(dpt)) => match employees_list.get(&dpt) {
@@ -135,11 +103,7 @@ fn main() {
                 }
                 None => {
                     let warning_emoji: Emoji = Emoji::new("⚠️", "w");
-                    println!(
-                        "\n{}  {}\n",
-                        warning_emoji.0,
-                        "Department not found!".yellow().bold()
-                    );
+                    println!("\n{}  {}\n", warning_emoji.0, "Department not found!".yellow().bold());
                 }
             },
 
@@ -161,11 +125,7 @@ fn main() {
 
             None => {
                 let error_emoji: Emoji = Emoji::new("🚫", "e");
-                println!(
-                    "\n{} {}\n",
-                    error_emoji.0,
-                    "[ERROR]: Invalid Syntax!".red().bold()
-                );
+                println!("\n{} {}\n", error_emoji.0, "[ERROR]: Invalid Syntax!".red().bold());
             }
         }
     }
